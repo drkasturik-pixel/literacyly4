@@ -3,21 +3,32 @@
 ========================================== */
 
 /* ==========================================
-   DOM ELEMENTS
+   ELEMENTS
 ========================================== */
 
-const splashScreen = document.getElementById("splashScreen");
-const gameContainer = document.getElementById("gameContainer");
-const loadingScreen = document.getElementById("loadingScreen");
+const splashScreen =
+document.getElementById("splashScreen");
 
-const wordImage = document.getElementById("wordImage");
+const gameContainer =
+document.getElementById("gameContainer");
 
-const prefix = document.getElementById("prefix");
-const suffix = document.getElementById("suffix");
+const loadingScreen =
+document.getElementById("loadingScreen");
 
-const dropZone = document.getElementById("dropZone");
+const wordImage =
+document.getElementById("wordImage");
 
-const scoreValue = document.getElementById("scoreValue");
+const prefix =
+document.getElementById("prefix");
+
+const suffix =
+document.getElementById("suffix");
+
+const dropZone =
+document.getElementById("dropZone");
+
+const scoreValue =
+document.getElementById("scoreValue");
 
 const replayWordBtn =
 document.getElementById("replayWordBtn");
@@ -40,6 +51,12 @@ document.getElementById("wrongSound");
 const backgroundMusic =
 document.getElementById("backgroundMusic");
 
+const oiSound =
+document.getElementById("oiSound");
+
+const ouSound =
+document.getElementById("ouSound");
+
 const endScreen =
 document.getElementById("endScreen");
 
@@ -56,7 +73,7 @@ const tiles =
 document.querySelectorAll(".soundTile");
 
 /* ==========================================
-   GAME DATA
+   WORD DATA
 ========================================== */
 
 const words = [
@@ -128,7 +145,7 @@ suffix:"ch"
 ];
 
 /* ==========================================
-   GAME STATE
+   STATE
 ========================================== */
 
 let currentIndex = 0;
@@ -159,13 +176,6 @@ return array;
 
 function speak(text, callback=null){
 
-if(!window.speechSynthesis){
-
-if(callback) callback();
-
-return;
-}
-
 speechSynthesis.cancel();
 
 const utterance =
@@ -173,12 +183,10 @@ new SpeechSynthesisUtterance(text);
 
 utterance.rate = 0.85;
 utterance.pitch = 1;
-utterance.volume = 1;
 
 utterance.onend = ()=>{
 
 if(callback){
-
 callback();
 }
 
@@ -188,10 +196,61 @@ speechSynthesis.speak(utterance);
 }
 
 /* ==========================================
+   SPEAK WORD
+========================================== */
+
+function speakWord(){
+
+speechSynthesis.cancel();
+
+const utterance =
+new SpeechSynthesisUtterance(
+currentWord.word
+);
+
+utterance.rate = 0.8;
+utterance.pitch = 1;
+
+speechSynthesis.speak(
+utterance
+);
+}
+
+/* ==========================================
+   PHONICS SOUND
+========================================== */
+
+function playPhonicsSound(sound){
+
+if(sound === "oi"){
+
+oiSound.currentTime = 0;
+oiSound.play();
+
+}
+else{
+
+ouSound.currentTime = 0;
+ouSound.play();
+
+}
+}
+
+/* ==========================================
+   SCORE
+========================================== */
+
+function updateScore(){
+
+scoreValue.textContent =
+score;
+}
+
+/* ==========================================
    INSTRUCTIONS
 ========================================== */
 
-function speakInstructions(){
+function playInstructions(){
 
 const text =
 
@@ -199,7 +258,7 @@ const text =
 
 "Listen carefully to the word. " +
 
-"Drag O I or O U into the blank. " +
+"Drag the correct sound into the blank. " +
 
 "Choose the sound that completes the word. " +
 
@@ -207,9 +266,22 @@ const text =
 
 speak(text, ()=>{
 
+playPhonicsSound("oi");
+
+setTimeout(()=>{
+
+playPhonicsSound("ou");
+
+},1200);
+
+setTimeout(()=>{
+
 startMusic();
 
 loadWord();
+
+},2500);
+
 });
 }
 
@@ -219,29 +291,10 @@ loadWord();
 
 function startMusic(){
 
-backgroundMusic.volume = 0.25;
+backgroundMusic.volume = 0.20;
 
-backgroundMusic.play().catch(()=>{});
-}
-
-/* ==========================================
-   SCORE
-========================================== */
-
-function updateScore(){
-
-scoreValue.textContent = score;
-}
-
-/* ==========================================
-   WORD AUDIO
-========================================== */
-
-function speakCurrentWord(){
-
-if(!currentWord) return;
-
-speak(currentWord.word);
+backgroundMusic.play()
+.catch(()=>{});
 }
 
 /* ==========================================
@@ -276,13 +329,99 @@ dropZone.textContent =
 
 setTimeout(()=>{
 
-speakCurrentWord();
+speakWord();
 
 },500);
 }
 
 /* ==========================================
-   DRAG SUPPORT
+   CHECK ANSWER
+========================================== */
+
+function checkAnswer(choice){
+
+if(choice === currentWord.answer){
+
+correctAnswer();
+
+}else{
+
+wrongAnswer();
+
+}
+}
+
+/* ==========================================
+   CORRECT
+========================================== */
+
+function correctAnswer(){
+
+correctSound.currentTime = 0;
+correctSound.play();
+
+score++;
+
+updateScore();
+
+dropZone.textContent =
+currentWord.answer.toUpperCase();
+
+correctFeedback.classList.remove(
+"hidden"
+);
+
+playPhonicsSound(
+currentWord.answer
+);
+
+setTimeout(()=>{
+
+correctFeedback.classList.add(
+"hidden"
+);
+
+currentIndex++;
+
+loadWord();
+
+},1500);
+}
+
+/* ==========================================
+   WRONG
+========================================== */
+
+function wrongAnswer(){
+
+wrongSound.currentTime = 0;
+wrongSound.play();
+
+wrongFeedback.classList.remove(
+"hidden"
+);
+
+setTimeout(()=>{
+
+wrongFeedback.classList.add(
+"hidden"
+);
+
+speak(
+"Listen again"
+);
+
+setTimeout(()=>{
+
+speakWord();
+
+},900);
+
+},1200);
+}
+
+/* ==========================================
+   DRAGGING
 ========================================== */
 
 tiles.forEach(tile=>{
@@ -339,13 +478,13 @@ dropZone.classList.remove(
 "drag-over"
 );
 
-const selected =
+const choice =
 
 e.dataTransfer.getData(
 "text/plain"
 );
 
-checkAnswer(selected);
+checkAnswer(choice);
 
 }
 );
@@ -370,96 +509,7 @@ tile.dataset.sound
 });
 
 /* ==========================================
-   ANSWER CHECK
-========================================== */
-
-function checkAnswer(choice){
-
-if(choice === currentWord.answer){
-
-handleCorrect();
-}
-else{
-
-handleWrong();
-}
-
-}
-
-/* ==========================================
-   CORRECT
-========================================== */
-
-function handleCorrect(){
-
-correctSound.currentTime = 0;
-
-correctSound.play();
-
-score++;
-
-updateScore();
-
-dropZone.textContent =
-currentWord.answer.toUpperCase();
-
-correctFeedback.classList.remove(
-"hidden"
-);
-
-speak(
-`${currentWord.word} has ${currentWord.answer}`,
-()=>{}
-);
-
-setTimeout(()=>{
-
-correctFeedback.classList.add(
-"hidden"
-);
-
-currentIndex++;
-
-loadWord();
-
-},1500);
-}
-
-/* ==========================================
-   WRONG
-========================================== */
-
-function handleWrong(){
-
-wrongSound.currentTime = 0;
-
-wrongSound.play();
-
-wrongFeedback.classList.remove(
-"hidden"
-);
-
-setTimeout(()=>{
-
-wrongFeedback.classList.add(
-"hidden"
-);
-
-speak(
-"Listen again."
-);
-
-setTimeout(()=>{
-
-speakCurrentWord();
-
-},800);
-
-},1200);
-}
-
-/* ==========================================
-   STAR RATING
+   STARS
 ========================================== */
 
 function getStars(){
@@ -493,8 +543,6 @@ return "⭐";
 
 function finishGame(){
 
-speechSynthesis.cancel();
-
 backgroundMusic.pause();
 
 finalScore.textContent =
@@ -518,7 +566,6 @@ playAgainBtn.addEventListener(
 ()=>{
 
 score = 0;
-
 currentIndex = 0;
 
 updateScore();
@@ -537,23 +584,31 @@ startMusic();
 );
 
 /* ==========================================
-   REPLAY BUTTONS
+   REPLAY WORD
 ========================================== */
 
 replayWordBtn.addEventListener(
 "click",
 ()=>{
 
-speakCurrentWord();
+if(currentWord){
+
+speakWord();
+
+}
 
 }
 );
+
+/* ==========================================
+   REPLAY INSTRUCTIONS
+========================================== */
 
 replayInstructionsBtn.addEventListener(
 "click",
 ()=>{
 
-speakInstructions();
+playInstructions();
 
 }
 );
@@ -585,7 +640,7 @@ gameContainer.classList.remove(
 "hidden"
 );
 
-speakInstructions();
+playInstructions();
 
 },5000);
 
