@@ -3,7 +3,8 @@
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
 
 <title>OI and OU Sound Detective</title>
 
@@ -20,10 +21,24 @@
 <div id="splashScreen">
 
     <img
+        id="logo"
         src="assets/innovine-logo.png"
         alt="Innovine Logo"
-        id="logo"
     >
+
+</div>
+
+<!-- ===================================== -->
+<!-- LOADING -->
+<!-- ===================================== -->
+
+<div id="loadingScreen">
+
+    <div class="loadingBox">
+
+        Loading...
+
+    </div>
 
 </div>
 
@@ -37,7 +52,9 @@
 
     <header>
 
-        <h1>OI and OU Sound Detective</h1>
+        <h1>
+            OI and OU Sound Detective
+        </h1>
 
         <div id="instructions">
 
@@ -46,7 +63,7 @@
             </p>
 
             <p>
-                Drag OI or OU into the blank.
+                Drag the correct sound into the blank.
             </p>
 
             <p>
@@ -57,17 +74,28 @@
 
         <div id="topBar">
 
-            <button id="replayInstructionsBtn">
+            <button
+                id="replayInstructionsBtn">
+
                 🔊 Replay Instructions
+
             </button>
 
-            <button id="replayWordBtn">
+            <button
+                id="replayWordBtn">
+
                 🔈 Hear Word Again
+
             </button>
 
             <div id="scoreBox">
+
                 Score:
-                <span id="scoreValue">0</span>/8
+                <span id="scoreValue">
+                    0
+                </span>
+                / 8
+
             </div>
 
         </div>
@@ -92,13 +120,14 @@
 
         </section>
 
-        <!-- WORD AREA -->
+        <!-- WORD -->
 
         <section id="wordArea">
 
             <div id="wordDisplay">
 
-                <span id="prefix"></span>
+                <span id="prefix">
+                </span>
 
                 <div id="dropZone">
 
@@ -106,73 +135,84 @@
 
                 </div>
 
-                <span id="suffix"></span>
+                <span id="suffix">
+                </span>
 
             </div>
 
         </section>
 
-        <!-- DRAG OPTIONS -->
+        <!-- SOUND CHOICES -->
 
         <section id="choices">
 
             <div
                 class="soundTile"
                 draggable="true"
-                data-sound="oi"
-            >
+                data-sound="oi">
+
                 OI
+
             </div>
 
             <div
                 class="soundTile"
                 draggable="true"
-                data-sound="ou"
-            >
+                data-sound="ou">
+
                 OU
+
             </div>
 
         </section>
 
-        <!-- FEEDBACK -->
+        <!-- FEEDBACK RIGHT SIDE -->
 
-        <section id="feedbackArea">
+        <div id="feedbackArea">
 
             <div
                 id="correctFeedback"
-                class="feedback hidden"
-            >
+                class="feedback hidden">
 
                 <div class="bigIcon">
+
                     ✅
+
                 </div>
 
                 <div class="feedbackText">
+
                     Great Job!
+
                 </div>
 
                 <div class="claps">
+
                     👏 👏 👏
+
                 </div>
 
             </div>
 
             <div
                 id="wrongFeedback"
-                class="feedback hidden"
-            >
+                class="feedback hidden">
 
                 <div class="bigIcon">
+
                     ❌
+
                 </div>
 
                 <div class="feedbackText">
+
                     Try Again
+
                 </div>
 
             </div>
 
-        </section>
+        </div>
 
     </main>
 
@@ -187,11 +227,15 @@
     <div class="endCard">
 
         <h1>
+
             🎉 Congratulations!
+
         </h1>
 
         <h2>
-            You completed all the OI and OU words!
+
+            You completed all the words!
+
         </h2>
 
         <div id="finalScore">
@@ -206,7 +250,8 @@
 
         </div>
 
-        <button id="playAgainBtn">
+        <button
+            id="playAgainBtn">
 
             Play Again
 
@@ -217,56 +262,64 @@
 </div>
 
 <!-- ===================================== -->
-<!-- AUDIO -->
+<!-- AUDIO FILES -->
 <!-- ===================================== -->
 
 <audio
     id="correctSound"
-    preload="auto"
->
+    preload="auto">
+
     <source
         src="assets/correct.mp3"
-        type="audio/mpeg"
-    >
+        type="audio/mpeg">
+
 </audio>
 
 <audio
     id="wrongSound"
-    preload="auto"
->
+    preload="auto">
+
     <source
         src="assets/wrong.mp3"
-        type="audio/mpeg"
-    >
+        type="audio/mpeg">
+
 </audio>
 
 <audio
     id="backgroundMusic"
     preload="auto"
-    loop
->
+    loop>
+
     <source
         src="assets/background music.mp3"
-        type="audio/mpeg"
-    >
+        type="audio/mpeg">
+
+</audio>
+
+<!-- PHONICS SOUNDS -->
+
+<audio
+    id="oiSound"
+    preload="auto">
+
+    <source
+        src="assets/oi-sound.mp3"
+        type="audio/mpeg">
+
+</audio>
+
+<audio
+    id="ouSound"
+    preload="auto">
+
+    <source
+        src="assets/ou-sound.mp3"
+        type="audio/mpeg">
+
 </audio>
 
 <!-- ===================================== -->
-<!-- LOADING SCREEN -->
-<!-- ===================================== -->
-
-<div id="loadingScreen">
-
-    <div class="loadingBox">
-
-        Loading...
-
-    </div>
-
-</div>
-
-<!-- ===================================== -->
-<!-- JAVASCRIPT -->
+<!-- SCRIPT -->
 <!-- ===================================== -->
 
 <script src="script.js"></script>
