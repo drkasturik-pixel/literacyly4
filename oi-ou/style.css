@@ -1,0 +1,624 @@
+/* ==========================================
+   RESET
+========================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html,
+body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    font-family:
+    "Trebuchet MS",
+    Arial,
+    sans-serif;
+
+    background:
+    linear-gradient(
+    to bottom,
+    #fff7c8,
+    #dff4ff
+    );
+}
+
+/* ==========================================
+   UTILITIES
+========================================== */
+
+.hidden{
+    display:none !important;
+}
+
+button{
+    border:none;
+    cursor:pointer;
+
+    background:#ffd76a;
+
+    padding:10px 18px;
+
+    border-radius:15px;
+
+    font-weight:bold;
+
+    color:#333;
+
+    transition:.2s;
+}
+
+button:hover{
+    transform:scale(1.03);
+}
+
+button:active{
+    transform:scale(.98);
+}
+
+/* ==========================================
+   SPLASH SCREEN
+========================================== */
+
+#splashScreen{
+
+    position:fixed;
+
+    inset:0;
+
+    background:white;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    z-index:9999;
+}
+
+#logo{
+
+    width:min(350px,70vw);
+
+    animation:fadeIn 2s ease;
+}
+
+@keyframes fadeIn{
+
+    from{
+        opacity:0;
+        transform:scale(.9);
+    }
+
+    to{
+        opacity:1;
+        transform:scale(1);
+    }
+}
+
+/* ==========================================
+   GAME CONTAINER
+========================================== */
+
+#gameContainer{
+
+    width:100%;
+    height:100vh;
+
+    display:flex;
+    flex-direction:column;
+}
+
+/* ==========================================
+   HEADER
+========================================== */
+
+header{
+
+    text-align:center;
+
+    padding:8px;
+}
+
+header h1{
+
+    color:#30465f;
+
+    font-size:
+    clamp(
+    1.2rem,
+    2vw,
+    2rem
+    );
+
+    margin-bottom:8px;
+}
+
+#instructions{
+
+    max-width:900px;
+
+    margin:auto;
+
+    background:white;
+
+    border-radius:20px;
+
+    padding:10px;
+
+    border:
+    3px solid #b8e4ff;
+}
+
+#instructions p{
+
+    margin:4px 0;
+
+    color:#444;
+
+    font-size:
+    clamp(
+    .8rem,
+    1vw,
+    1rem
+    );
+}
+
+#topBar{
+
+    margin-top:10px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:10px;
+
+    flex-wrap:wrap;
+}
+
+#scoreBox{
+
+    background:#dff8d8;
+
+    padding:10px 18px;
+
+    border-radius:15px;
+
+    border:
+    2px solid #9dd59c;
+
+    font-weight:bold;
+}
+
+/* ==========================================
+   MAIN
+========================================== */
+
+main{
+
+    flex:1;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    position:relative;
+}
+
+/* ==========================================
+   PICTURE
+========================================== */
+
+#pictureArea{
+
+    height:200px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+}
+
+#wordImage{
+
+    max-width:220px;
+
+    max-height:180px;
+
+    object-fit:contain;
+}
+
+/* ==========================================
+   WORD DISPLAY
+========================================== */
+
+#wordArea{
+
+    margin-top:10px;
+}
+
+#wordDisplay{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:10px;
+
+    font-size:
+    clamp(
+    2rem,
+    4vw,
+    3.5rem
+    );
+
+    font-weight:bold;
+
+    color:#30465f;
+}
+
+#dropZone{
+
+    width:110px;
+
+    height:80px;
+
+    background:white;
+
+    border:
+    4px dashed #8ccfff;
+
+    border-radius:18px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:2rem;
+
+    transition:.2s;
+}
+
+#dropZone.drag-over{
+
+    background:#fff9d9;
+
+    transform:scale(1.05);
+}
+
+/* ==========================================
+   CHOICES
+========================================== */
+
+#choices{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:30px;
+
+    margin-top:25px;
+}
+
+.soundTile{
+
+    width:140px;
+
+    height:90px;
+
+    border-radius:25px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:2rem;
+
+    font-weight:bold;
+
+    cursor:grab;
+
+    user-select:none;
+
+    box-shadow:
+    0 5px 15px
+    rgba(0,0,0,.15);
+
+    transition:.2s;
+}
+
+.soundTile:hover{
+
+    transform:translateY(-3px);
+}
+
+.soundTile:active{
+
+    cursor:grabbing;
+}
+
+.soundTile[data-sound="oi"]{
+
+    background:#ffd7ef;
+
+    border:
+    3px solid #ff87c3;
+}
+
+.soundTile[data-sound="ou"]{
+
+    background:#d9f6d8;
+
+    border:
+    3px solid #82cf81;
+}
+
+/* ==========================================
+   FEEDBACK
+========================================== */
+
+#feedbackArea{
+
+    position:absolute;
+
+    inset:0;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    pointer-events:none;
+}
+
+.feedback{
+
+    text-align:center;
+}
+
+.bigIcon{
+
+    font-size:5rem;
+}
+
+.feedbackText{
+
+    font-size:2rem;
+
+    font-weight:bold;
+}
+
+.claps{
+
+    margin-top:8px;
+
+    font-size:2rem;
+}
+
+#correctFeedback{
+
+    color:#2ea52e;
+}
+
+#wrongFeedback{
+
+    color:#d93636;
+}
+
+/* ==========================================
+   END SCREEN
+========================================== */
+
+#endScreen{
+
+    position:fixed;
+
+    inset:0;
+
+    background:
+    rgba(
+    255,
+    255,
+    255,
+    .95
+    );
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    z-index:5000;
+}
+
+.endCard{
+
+    width:min(
+    90%,
+    600px
+    );
+
+    background:white;
+
+    padding:30px;
+
+    border-radius:30px;
+
+    text-align:center;
+
+    box-shadow:
+    0 10px 30px
+    rgba(0,0,0,.15);
+}
+
+.endCard h1{
+
+    color:#2f7f2f;
+}
+
+.endCard h2{
+
+    margin-top:10px;
+
+    color:#555;
+}
+
+#finalScore{
+
+    font-size:2rem;
+
+    margin-top:20px;
+
+    font-weight:bold;
+}
+
+#starContainer{
+
+    font-size:2.4rem;
+
+    margin:20px 0;
+}
+
+/* ==========================================
+   LOADING
+========================================== */
+
+#loadingScreen{
+
+    position:fixed;
+
+    inset:0;
+
+    background:white;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    z-index:10000;
+}
+
+.loadingBox{
+
+    font-size:1.4rem;
+
+    color:#666;
+}
+
+/* ==========================================
+   MOBILE
+========================================== */
+
+@media(max-width:768px){
+
+    #pictureArea{
+
+        height:150px;
+    }
+
+    #wordImage{
+
+        max-width:150px;
+        max-height:120px;
+    }
+
+    #wordDisplay{
+
+        font-size:2rem;
+    }
+
+    #dropZone{
+
+        width:85px;
+        height:65px;
+    }
+
+    .soundTile{
+
+        width:110px;
+        height:75px;
+
+        font-size:1.7rem;
+    }
+
+    .bigIcon{
+
+        font-size:4rem;
+    }
+
+    .feedbackText{
+
+        font-size:1.5rem;
+    }
+}
+
+/* ==========================================
+   SMALL PHONES
+========================================== */
+
+@media(max-width:480px){
+
+    header h1{
+
+        font-size:1rem;
+    }
+
+    #instructions p{
+
+        font-size:.75rem;
+    }
+
+    #choices{
+
+        gap:15px;
+    }
+
+    .soundTile{
+
+        width:95px;
+        height:65px;
+
+        font-size:1.5rem;
+    }
+
+    #wordDisplay{
+
+        font-size:1.8rem;
+    }
+
+    #dropZone{
+
+        width:75px;
+        height:60px;
+    }
+
+    button{
+
+        font-size:.8rem;
+
+        padding:8px 12px;
+    }
+}
