@@ -2,151 +2,99 @@
    OI & OU SOUND DETECTIVE
 ========================================== */
 
-/* ==========================================
-   ELEMENTS
-========================================== */
+const splashScreen = document.getElementById("splashScreen");
+const gameContainer = document.getElementById("gameContainer");
+const loadingScreen = document.getElementById("loadingScreen");
 
-const splashScreen =
-document.getElementById("splashScreen");
+const wordImage = document.getElementById("wordImage");
+const prefix = document.getElementById("prefix");
+const suffix = document.getElementById("suffix");
+const dropZone = document.getElementById("dropZone");
 
-const gameContainer =
-document.getElementById("gameContainer");
+const scoreValue = document.getElementById("scoreValue");
 
-const loadingScreen =
-document.getElementById("loadingScreen");
+const replayWordBtn = document.getElementById("replayWordBtn");
+const replayInstructionsBtn = document.getElementById("replayInstructionsBtn");
 
-const wordImage =
-document.getElementById("wordImage");
+const correctFeedback = document.getElementById("correctFeedback");
+const wrongFeedback = document.getElementById("wrongFeedback");
 
-const prefix =
-document.getElementById("prefix");
+const correctSound = document.getElementById("correctSound");
+const wrongSound = document.getElementById("wrongSound");
+const backgroundMusic = document.getElementById("backgroundMusic");
 
-const suffix =
-document.getElementById("suffix");
+const oiSound = document.getElementById("oiSound");
+const ouSound = document.getElementById("ouSound");
 
-const dropZone =
-document.getElementById("dropZone");
+const endScreen = document.getElementById("endScreen");
+const finalScore = document.getElementById("finalScore");
+const starContainer = document.getElementById("starContainer");
+const playAgainBtn = document.getElementById("playAgainBtn");
 
-const scoreValue =
-document.getElementById("scoreValue");
-
-const replayWordBtn =
-document.getElementById("replayWordBtn");
-
-const replayInstructionsBtn =
-document.getElementById("replayInstructionsBtn");
-
-const correctFeedback =
-document.getElementById("correctFeedback");
-
-const wrongFeedback =
-document.getElementById("wrongFeedback");
-
-const correctSound =
-document.getElementById("correctSound");
-
-const wrongSound =
-document.getElementById("wrongSound");
-
-const backgroundMusic =
-document.getElementById("backgroundMusic");
-
-const oiSound =
-document.getElementById("oiSound");
-
-const ouSound =
-document.getElementById("ouSound");
-
-const endScreen =
-document.getElementById("endScreen");
-
-const finalScore =
-document.getElementById("finalScore");
-
-const starContainer =
-document.getElementById("starContainer");
-
-const playAgainBtn =
-document.getElementById("playAgainBtn");
-
-const tiles =
-document.querySelectorAll(".soundTile");
+const tiles = document.querySelectorAll(".soundTile");
 
 /* ==========================================
    WORD DATA
 ========================================== */
 
 const words = [
-
 {
-image:"boil.png",
-word:"boil",
-answer:"oi",
-prefix:"b",
-suffix:"l"
+    image:"boil.png",
+    word:"boil",
+    answer:"oi",
+    prefix:"b",
+    suffix:"l"
 },
-
 {
-image:"house.png",
-word:"house",
-answer:"ou",
-prefix:"h",
-suffix:"se"
+    image:"house.png",
+    word:"house",
+    answer:"ou",
+    prefix:"h",
+    suffix:"se"
 },
-
 {
-image:"coin.png",
-word:"coin",
-answer:"oi",
-prefix:"c",
-suffix:"n"
+    image:"coin.png",
+    word:"coin",
+    answer:"oi",
+    prefix:"c",
+    suffix:"n"
 },
-
 {
-image:"mouse.png",
-word:"mouse",
-answer:"ou",
-prefix:"m",
-suffix:"se"
+    image:"mouse.png",
+    word:"mouse",
+    answer:"ou",
+    prefix:"m",
+    suffix:"se"
 },
-
 {
-image:"oil.png",
-word:"oil",
-answer:"oi",
-prefix:"",
-suffix:"l"
+    image:"oil.png",
+    word:"oil",
+    answer:"oi",
+    prefix:"",
+    suffix:"l"
 },
-
 {
-image:"cloud.png",
-word:"cloud",
-answer:"ou",
-prefix:"cl",
-suffix:"d"
+    image:"cloud.png",
+    word:"cloud",
+    answer:"ou",
+    prefix:"cl",
+    suffix:"d"
 },
-
 {
-image:"mouth.png",
-word:"mouth",
-answer:"ou",
-prefix:"m",
-suffix:"th"
+    image:"mouth.png",
+    word:"mouth",
+    answer:"ou",
+    prefix:"m",
+    suffix:"th"
 },
-
 {
-image:"couch.png",
-word:"couch",
-answer:"ou",
-prefix:"c",
-suffix:"ch"
+    image:"couch.png",
+    word:"couch",
+    answer:"ou",
+    prefix:"c",
+    suffix:"ch"
 }
-
 ];
-
-/* ==========================================
-   STATE
-========================================== */
 
 let currentIndex = 0;
 let score = 0;
@@ -158,41 +106,37 @@ let currentWord = null;
 
 function shuffle(array){
 
-for(let i=array.length-1;i>0;i--){
+    for(let i=array.length-1;i>0;i--){
 
-const j =
-Math.floor(Math.random()*(i+1));
+        const j =
+        Math.floor(Math.random()*(i+1));
 
-[array[i],array[j]] =
-[array[j],array[i]];
-}
+        [array[i],array[j]] =
+        [array[j],array[i]];
+    }
 
-return array;
+    return array;
 }
 
 /* ==========================================
    SPEECH
 ========================================== */
 
-function speak(text, callback=null){
+function speak(text, callback){
 
-speechSynthesis.cancel();
+    speechSynthesis.cancel();
 
-const utterance =
-new SpeechSynthesisUtterance(text);
+    const utterance =
+    new SpeechSynthesisUtterance(text);
 
-utterance.rate = 0.85;
-utterance.pitch = 1;
+    utterance.rate = 0.85;
+    utterance.pitch = 1;
 
-utterance.onend = ()=>{
+    if(callback){
+        utterance.onend = callback;
+    }
 
-if(callback){
-callback();
-}
-
-};
-
-speechSynthesis.speak(utterance);
+    speechSynthesis.speak(utterance);
 }
 
 /* ==========================================
@@ -201,39 +145,37 @@ speechSynthesis.speak(utterance);
 
 function speakWord(){
 
-speechSynthesis.cancel();
+    speechSynthesis.cancel();
 
-const utterance =
-new SpeechSynthesisUtterance(
-currentWord.word
-);
+    const utterance =
+    new SpeechSynthesisUtterance(
+    currentWord.word
+    );
 
-utterance.rate = 0.8;
-utterance.pitch = 1;
+    utterance.rate = 0.8;
+    utterance.pitch = 1;
 
-speechSynthesis.speak(
-utterance
-);
+    speechSynthesis.speak(
+    utterance
+    );
 }
 
 /* ==========================================
-   PHONICS SOUND
+   PHONICS AUDIO
 ========================================== */
 
 function playPhonicsSound(sound){
 
-if(sound === "oi"){
+    if(sound === "oi"){
 
-oiSound.currentTime = 0;
-oiSound.play();
+        oiSound.currentTime = 0;
+        oiSound.play();
 
-}
-else{
+    }else{
 
-ouSound.currentTime = 0;
-ouSound.play();
-
-}
+        ouSound.currentTime = 0;
+        ouSound.play();
+    }
 }
 
 /* ==========================================
@@ -242,8 +184,8 @@ ouSound.play();
 
 function updateScore(){
 
-scoreValue.textContent =
-score;
+    scoreValue.textContent =
+    score;
 }
 
 /* ==========================================
@@ -252,37 +194,26 @@ score;
 
 function playInstructions(){
 
-const text =
+    speak(
+    "Welcome. Listen carefully to the word. Drag the correct sound into the blank. Choose the sound that completes the word. Let's play.",
+    ()=>{
 
-"Welcome. " +
+        playPhonicsSound("oi");
 
-"Listen carefully to the word. " +
+        setTimeout(()=>{
 
-"Drag the correct sound into the blank. " +
+            playPhonicsSound("ou");
 
-"Choose the sound that completes the word. " +
+        },1200);
 
-"Let's play.";
+        setTimeout(()=>{
 
-speak(text, ()=>{
+            startMusic();
+            loadWord();
 
-playPhonicsSound("oi");
+        },2500);
 
-setTimeout(()=>{
-
-playPhonicsSound("ou");
-
-},1200);
-
-setTimeout(()=>{
-
-startMusic();
-
-loadWord();
-
-},2500);
-
-});
+    });
 }
 
 /* ==========================================
@@ -291,10 +222,9 @@ loadWord();
 
 function startMusic(){
 
-backgroundMusic.volume = 0.20;
+    backgroundMusic.volume = 0.20;
 
-backgroundMusic.play()
-.catch(()=>{});
+    backgroundMusic.play().catch(()=>{});
 }
 
 /* ==========================================
@@ -303,52 +233,47 @@ backgroundMusic.play()
 
 function loadWord(){
 
-if(currentIndex >= words.length){
+    if(currentIndex >= words.length){
 
-finishGame();
-return;
-}
+        finishGame();
+        return;
+    }
 
-currentWord =
-words[currentIndex];
+    currentWord =
+    words[currentIndex];
 
-wordImage.src =
-`assets/${currentWord.image}`;
+    wordImage.src =
+    `assets/${currentWord.image}`;
 
-wordImage.alt =
-currentWord.word;
+    prefix.textContent =
+    currentWord.prefix;
 
-prefix.textContent =
-currentWord.prefix;
+    suffix.textContent =
+    currentWord.suffix;
 
-suffix.textContent =
-currentWord.suffix;
+    dropZone.textContent = "?";
 
-dropZone.textContent =
-"?";
+    setTimeout(()=>{
 
-setTimeout(()=>{
+        speakWord();
 
-speakWord();
-
-},500);
+    },500);
 }
 
 /* ==========================================
-   CHECK ANSWER
+   ANSWER CHECK
 ========================================== */
 
 function checkAnswer(choice){
 
-if(choice === currentWord.answer){
+    if(choice === currentWord.answer){
 
-correctAnswer();
+        correctAnswer();
 
-}else{
+    }else{
 
-wrongAnswer();
-
-}
+        wrongAnswer();
+    }
 }
 
 /* ==========================================
@@ -357,35 +282,36 @@ wrongAnswer();
 
 function correctAnswer(){
 
-correctSound.currentTime = 0;
-correctSound.play();
+    correctSound.currentTime = 0;
+    correctSound.play();
 
-score++;
+    score++;
+    updateScore();
 
-updateScore();
+    /* LOWERCASE oi / ou */
 
-dropZone.textContent =
-currentWord.answer.toUpperCase();
+    dropZone.textContent =
+    currentWord.answer;
 
-correctFeedback.classList.remove(
-"hidden"
-);
+    correctFeedback.classList.remove(
+    "hidden"
+    );
 
-playPhonicsSound(
-currentWord.answer
-);
+    playPhonicsSound(
+    currentWord.answer
+    );
 
-setTimeout(()=>{
+    setTimeout(()=>{
 
-correctFeedback.classList.add(
-"hidden"
-);
+        correctFeedback.classList.add(
+        "hidden"
+        );
 
-currentIndex++;
+        currentIndex++;
 
-loadWord();
+        loadWord();
 
-},1500);
+    },1500);
 }
 
 /* ==========================================
@@ -394,30 +320,28 @@ loadWord();
 
 function wrongAnswer(){
 
-wrongSound.currentTime = 0;
-wrongSound.play();
+    wrongSound.currentTime = 0;
+    wrongSound.play();
 
-wrongFeedback.classList.remove(
-"hidden"
-);
+    wrongFeedback.classList.remove(
+    "hidden"
+    );
 
-setTimeout(()=>{
+    setTimeout(()=>{
 
-wrongFeedback.classList.add(
-"hidden"
-);
+        wrongFeedback.classList.add(
+        "hidden"
+        );
 
-speak(
-"Listen again"
-);
+        speak("Listen again");
 
-setTimeout(()=>{
+        setTimeout(()=>{
 
-speakWord();
+            speakWord();
 
-},900);
+        },900);
 
-},1200);
+    },1200);
 }
 
 /* ==========================================
@@ -426,17 +350,16 @@ speakWord();
 
 tiles.forEach(tile=>{
 
-tile.addEventListener(
-"dragstart",
-e=>{
+    tile.addEventListener(
+    "dragstart",
+    e=>{
 
-e.dataTransfer.setData(
-"text/plain",
-tile.dataset.sound
-);
+        e.dataTransfer.setData(
+        "text/plain",
+        tile.dataset.sound
+        );
 
-}
-);
+    });
 
 });
 
@@ -448,46 +371,40 @@ dropZone.addEventListener(
 "dragover",
 e=>{
 
-e.preventDefault();
+    e.preventDefault();
 
-dropZone.classList.add(
-"drag-over"
-);
-
-}
-);
+    dropZone.classList.add(
+    "drag-over"
+    );
+});
 
 dropZone.addEventListener(
 "dragleave",
 ()=>{
 
-dropZone.classList.remove(
-"drag-over"
-);
-
-}
-);
+    dropZone.classList.remove(
+    "drag-over"
+    );
+});
 
 dropZone.addEventListener(
 "drop",
 e=>{
 
-e.preventDefault();
+    e.preventDefault();
 
-dropZone.classList.remove(
-"drag-over"
-);
+    dropZone.classList.remove(
+    "drag-over"
+    );
 
-const choice =
+    const choice =
+    e.dataTransfer.getData(
+    "text/plain"
+    );
 
-e.dataTransfer.getData(
-"text/plain"
-);
+    checkAnswer(choice);
 
-checkAnswer(choice);
-
-}
-);
+});
 
 /* ==========================================
    TOUCH SUPPORT
@@ -495,16 +412,15 @@ checkAnswer(choice);
 
 tiles.forEach(tile=>{
 
-tile.addEventListener(
-"click",
-()=>{
+    tile.addEventListener(
+    "click",
+    ()=>{
 
-checkAnswer(
-tile.dataset.sound
-);
+        checkAnswer(
+        tile.dataset.sound
+        );
 
-}
-);
+    });
 
 });
 
@@ -514,27 +430,11 @@ tile.dataset.sound
 
 function getStars(){
 
-if(score === 8){
-
-return "⭐⭐⭐⭐⭐";
-}
-
-if(score === 7){
-
-return "⭐⭐⭐⭐";
-}
-
-if(score >= 5){
-
-return "⭐⭐⭐";
-}
-
-if(score >= 3){
-
-return "⭐⭐";
-}
-
-return "⭐";
+    if(score === 8) return "⭐⭐⭐⭐⭐";
+    if(score === 7) return "⭐⭐⭐⭐";
+    if(score >= 5) return "⭐⭐⭐";
+    if(score >= 3) return "⭐⭐";
+    return "⭐";
 }
 
 /* ==========================================
@@ -543,18 +443,17 @@ return "⭐";
 
 function finishGame(){
 
-backgroundMusic.pause();
+    backgroundMusic.pause();
 
-finalScore.textContent =
+    finalScore.textContent =
+    `Final Score: ${score} / 8`;
 
-`Final Score: ${score} / 8`;
+    starContainer.textContent =
+    getStars();
 
-starContainer.textContent =
-getStars();
-
-endScreen.classList.remove(
-"hidden"
-);
+    endScreen.classList.remove(
+    "hidden"
+    );
 }
 
 /* ==========================================
@@ -565,53 +464,44 @@ playAgainBtn.addEventListener(
 "click",
 ()=>{
 
-score = 0;
-currentIndex = 0;
+    score = 0;
+    currentIndex = 0;
 
-updateScore();
+    updateScore();
 
-shuffle(words);
+    shuffle(words);
 
-endScreen.classList.add(
-"hidden"
-);
+    endScreen.classList.add(
+    "hidden"
+    );
 
-loadWord();
+    loadWord();
 
-startMusic();
+    startMusic();
 
-}
-);
+});
 
 /* ==========================================
-   REPLAY WORD
+   REPLAY BUTTONS
 ========================================== */
 
 replayWordBtn.addEventListener(
 "click",
 ()=>{
 
-if(currentWord){
+    if(currentWord){
+        speakWord();
+    }
 
-speakWord();
-
-}
-
-}
-);
-
-/* ==========================================
-   REPLAY INSTRUCTIONS
-========================================== */
+});
 
 replayInstructionsBtn.addEventListener(
 "click",
 ()=>{
 
-playInstructions();
+    playInstructions();
 
-}
-);
+});
 
 /* ==========================================
    STARTUP
@@ -621,31 +511,30 @@ window.addEventListener(
 "load",
 ()=>{
 
-shuffle(words);
+    shuffle(words);
 
-setTimeout(()=>{
+    setTimeout(()=>{
 
-loadingScreen.classList.add(
-"hidden"
-);
+        loadingScreen.classList.add(
+        "hidden"
+        );
 
-},500);
+    },500);
 
-setTimeout(()=>{
+    setTimeout(()=>{
 
-splashScreen.style.display =
-"none";
+        splashScreen.style.display =
+        "none";
 
-gameContainer.classList.remove(
-"hidden"
-);
+        gameContainer.classList.remove(
+        "hidden"
+        );
 
-playInstructions();
+        playInstructions();
 
-},5000);
+    },5000);
 
-}
-);
+});
 
 /* ==========================================
    INITIAL SCORE
